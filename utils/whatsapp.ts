@@ -3,35 +3,24 @@ import { CartItem, OrderDetails } from '../types';
 import { WHATSAPP_NUMBER } from '../constants';
 
 export const sendOrderToWhatsApp = (cart: CartItem[], order: OrderDetails, total: number) => {
-  const date = new Date().toLocaleString('ar-EG');
-  const storeUrl = window.location.origin;
-
   const itemsText = cart
-    .map((item, index) => {
-      return `📦 *[${index + 1}] ${item.name}*
-- الكود: ${item.sku}
-- الكمية: ${item.cartQuantity}
-- السعر: ${item.price * item.cartQuantity} ج.م`;
-    })
-    .join('\n\n');
+    .map((item) => `- ${item.name} (عدد: ${item.cartQuantity}) - السعر: ${item.price * item.cartQuantity} ج.م`)
+    .join('\n');
 
-  const message = `🚀 *طلب شراء جديد من كيمي هوم جولد* 🚀
----------------------------------------
-👤 *بيانات العميل المستلم:*
-• الاسم: ${order.customerName}
-• الهاتف: ${order.phoneNumber}
-• المحافظة: ${order.city}
-• العنوان: ${order.address}
+  const message = `طلب جديد من المتجر 🛍️
 
-🛒 *تفاصيل الطلبية:*
+*بيانات العميل:*
+- الاسم: ${order.customerName}
+- الهاتف: ${order.phoneNumber}
+- العنوان: ${order.address}
+- المدينة: ${order.city}
+
+*المنتجات المطلوبة:*
 ${itemsText}
 
----------------------------------------
-💰 *إجمالي الفاتورة: ${total} جنيه مصري*
-🚚 *الشحن: مجاني لكافة المحافظات*
----------------------------------------
-✅ *شكراً لثقتك بـ كيمي هوم جولد*
-🔗 تم الطلب عبر الموقع: ${storeUrl}`;
+*الإجمالي:* ${total} ج.م
+
+يرجى تأكيد الطلب وتحديد موعد التسليم.`;
 
   const encodedMessage = encodeURIComponent(message);
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, '_blank');

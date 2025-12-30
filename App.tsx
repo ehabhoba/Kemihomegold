@@ -7,33 +7,27 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import ProductDetails from './pages/ProductDetails';
 import Checkout from './pages/Checkout';
-import Contact from './pages/Contact';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
-import About from './pages/About';
-import Sitemap from './pages/Sitemap';
-import Privacy from './pages/Privacy';
-import Terms from './pages/Terms';
 import Cart from './components/Cart';
-import { WHATSAPP_NUMBER } from './constants';
 
 const App: React.FC = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  // Load cart from local storage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem('kemi_gold_v4');
+    const savedCart = localStorage.getItem('hgs_cart');
     if (savedCart) {
       try {
         setCart(JSON.parse(savedCart));
       } catch (e) {
-        console.error("Cart error", e);
+        console.error("Error loading cart", e);
       }
     }
   }, []);
 
+  // Save cart to local storage on change
   useEffect(() => {
-    localStorage.setItem('kemi_gold_v4', JSON.stringify(cart));
+    localStorage.setItem('hgs_cart', JSON.stringify(cart));
   }, [cart]);
 
   const handleAddToCart = (product: Product) => {
@@ -59,21 +53,14 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <div className="min-h-screen flex flex-col font-cairo selection:bg-gold-500 selection:text-white bg-white">
+      <div className="min-h-screen flex flex-col font-cairo selection:bg-gold-500 selection:text-white">
         <Navbar cart={cart} onOpenCart={() => setIsCartOpen(true)} />
         
-        <main className="flex-1">
+        <main className="flex-1 bg-gray-50">
           <Routes>
             <Route path="/" element={<Home onAddToCart={handleAddToCart} />} />
             <Route path="/product/:slug" element={<ProductDetails onAddToCart={handleAddToCart} />} />
             <Route path="/checkout" element={<Checkout cart={cart} />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/sitemap" element={<Sitemap />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
           </Routes>
         </main>
 
@@ -87,12 +74,13 @@ const App: React.FC = () => {
           onUpdateQuantity={handleUpdateQuantity}
         />
 
+        {/* Floating WhatsApp Button for quick support */}
         <a 
-          href={`https://wa.me/${WHATSAPP_NUMBER}`} 
+          href="https://wa.me/201021421422" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="fixed bottom-6 right-6 z-40 bg-green-500 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center animate-bounce"
-          aria-label="WhatsApp Support"
+          className="fixed bottom-6 right-6 z-40 bg-green-500 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform active:scale-95 flex items-center justify-center animate-pulse"
+          aria-label="Contact support on WhatsApp"
         >
           <img src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="WhatsApp" className="w-8 h-8" />
         </a>
